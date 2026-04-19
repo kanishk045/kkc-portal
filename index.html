@@ -73,7 +73,7 @@
                 </svg>
               </span>
               <input type="text" id="username" name="username" autocomplete="username"
-                placeholder="username" required>
+                placeholder="naresh.sharma" required>
             </div>
             <div class="field-error" id="username-err">Username is required</div>
           </div>
@@ -272,9 +272,7 @@
 //  In production: 'https://yourdomain.com'
 //  In dev (same machine): 'http://localhost:3000'
 // ════════════════════════════════════════════
-const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3000'
-  : '';  // empty = same origin (when served by Express)
+const API = '';  // always use same origin — works on Railway and localhost
 
 // ════════════════════════════════════════════
 //  STATE
