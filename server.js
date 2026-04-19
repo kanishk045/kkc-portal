@@ -169,8 +169,8 @@ app.get('/api/download', requireAuth, (req, res) => {
 
   console.log(`[Download] ${req.user.username} (${req.user.name}) downloaded v${client?.version}`);
 
-  // Redirect to Google Drive direct download
-  res.redirect(GDRIVE_URL);
+  // Return URL as JSON — frontend opens it directly (avoids CORS on redirect)
+  res.json({ url: GDRIVE_URL });
 });
 
 // ── GET /api/changelog ───────────────────────

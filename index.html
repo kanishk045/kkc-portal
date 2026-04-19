@@ -440,38 +440,16 @@ document.getElementById('download-btn').addEventListener('click', async () => {
       return;
     }
 
-    // Check if demo mode (JSON response, not binary)
-    const contentType = res.headers.get('content-type') || '';
-    if (contentType.includes('application/json')) {
-      const data = await res.json();
-      if (data.demo) {
-        showToast(
-          'Demo Mode',
-          'Place your APK file as "kota-kadak-chai.apk" in the server folder.',
-          false
-        );
-        btn.classList.remove('loading');
-        // Still update the download counter in UI
-        document.getElementById('dash-downloads').textContent =
-          parseInt(document.getElementById('dash-downloads').textContent || 0) + 1;
-        return;
-      }
+    // Server returns { url } — open directly in browser to avoid CORS
+    const data = await res.json();
+    if (data.url) {
+      window.open(data.url, '_blank');
+      showToast('Download Started', 'KotaKadakChai APK is downloading…');
+      document.getElementById('dash-downloads').textContent =
+        parseInt(document.getElementById('dash-downloads').textContent || 0) + 1;
+    } else {
+      showToast('Error', data.error || 'Download failed.', true);
     }
-
-    // Real binary APK — trigger browser download
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `KotaKadakChai-v${currentUser?.version || '1.0'}.apk`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    showToast('Download Started', 'KotaKadakChai APK is downloading…');
-    document.getElementById('dash-downloads').textContent =
-      parseInt(document.getElementById('dash-downloads').textContent || 0) + 1;
 
   } catch (err) {
     showToast('Error', 'Cannot connect to server. Is server.js running?', true);
