@@ -159,27 +159,18 @@ app.get('/api/me', requireAuth, (req, res) => {
 });
 
 // ── GET /api/download ────────────────────────
-// Protected: streams the APK file to the client
+// Protected: redirects to Google Drive APK
+const GDRIVE_FILE_ID = '1DZ-5kBVbbE75z5cevBv9wziAUb5nxH9z';
+const GDRIVE_URL = `https://drive.google.com/uc?export=download&id=${GDRIVE_FILE_ID}&confirm=t`;
+
 app.get('/api/download', requireAuth, (req, res) => {
-  const apkPath = path.join(__dirname, APK_FILENAME);
-
-  if (!fs.existsSync(apkPath)) {
-    // In dev/demo mode: send a placeholder response
-    console.log(`[Download] ${req.user.username} requested APK — file not found (demo mode)`);
-    return res.status(200).json({
-      demo: true,
-      message: `APK "kota-kadak-chai.apk" not found. Place your APK in the server folder and name it "kota-kadak-chai.apk".`,
-    });
-  }
-
   const client = CLIENTS[req.user.username];
   if (client) client.downloads++;
 
   console.log(`[Download] ${req.user.username} (${req.user.name}) downloaded v${client?.version}`);
 
-  res.setHeader('Content-Disposition', `attachment; filename="KotaKadakChai-v${client?.version || '1.0'}.apk"`);
-  res.setHeader('Content-Type', 'application/vnd.android.package-archive');
-  fs.createReadStream(apkPath).pipe(res);
+  // Redirect to Google Drive direct download
+  res.redirect(GDRIVE_URL);
 });
 
 // ── GET /api/changelog ───────────────────────
@@ -239,7 +230,7 @@ app.get('/admin/clients', requireAdmin, (req, res) => {
 });
 
 // ─── CATCH-ALL → index.html ──────────────────
-app.get('/{*path}', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
