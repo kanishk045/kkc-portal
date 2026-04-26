@@ -160,7 +160,7 @@ app.get('/api/me', requireAuth, (req, res) => {
 
 // ── GET /api/download ────────────────────────
 // Protected: redirects to Google Drive APK
-const GDRIVE_FILE_ID = '1DZ-5kBVbbE75z5cevBv9wziAUb5nxH9z';
+const GDRIVE_FILE_ID = '1P0z_64h9UZW-Xwj7QHXSBju2FZ0-iJsR';
 const GDRIVE_URL = `https://drive.google.com/uc?export=download&id=${GDRIVE_FILE_ID}&confirm=t`;
 
 app.get('/api/download', requireAuth, (req, res) => {
